@@ -60,19 +60,25 @@
 - Sort/Filter library items
 - Queue playback support 
 - Intro Skip button using [jumoog/Intro-Skipper](https://github.com/jumoog/intro-skipper) plugin
+- Mediasegment support
 
 ## 📷 Screenshots
 
 - Home
-  ![home](https://github.com/user-attachments/assets/6d892160-4513-4496-a220-4c3ce6af20a4)
-- Title Page - Movie
-  ![title-movie](https://github.com/prayag17/Blink/assets/55829513/1086f51b-a743-46e4-a761-c9f70a0d21bd)
-- Title Page - Show
-  ![title-show](https://github.com/prayag17/Blink/assets/55829513/23b42d4a-2892-497b-aa32-0ae73e300655)
-- Episode List
-  ![show-episodes](https://github.com/prayag17/Blink/assets/55829513/9fe69ddd-ffa3-4a6b-a2a7-c2e639b6b2e4)
+  <img width="2560" height="1600" alt="Screenshot 2026-02-10 212208" src="https://github.com/user-attachments/assets/036c2339-e8f1-4c8d-a908-af0ece9bb1f3" />
+- Library
+  <img width="2560" height="1600" alt="Screenshot 2026-02-10 212723" src="https://github.com/user-attachments/assets/6520a325-3cf3-47a0-9056-b27aded4bb8c" />
+- Music Player Detailed
+  <img width="2560" height="1600" alt="Screenshot 2026-02-10 213017" src="https://github.com/user-attachments/assets/00a89efa-0a4c-4272-868e-f52c9fcfeaac" />
+- Item Page
+  <img width="2560" height="1600" alt="Screenshot 2026-02-10 212653" src="https://github.com/user-attachments/assets/5d281f8c-48ba-4787-b8ca-a4b86ccab5c1" />
+- Album / Music Player
+  <img width="2560" height="1600" alt="Screenshot 2026-02-10 212949" src="https://github.com/user-attachments/assets/d99aaea5-e242-4b3d-a5c5-d2868313728b" />
+- Search Dialog
+  <img width="2560" height="1600" alt="Screenshot 2026-02-10 212749" src="https://github.com/user-attachments/assets/4ad87072-86ad-4510-95a4-567d6d11e997" />
 - Video Player
-  ![playback-video](https://github.com/prayag17/Blink/assets/55829513/a84850e6-3be7-41c5-8cf7-e14c3cd0df29)
+  <img width="2560" height="1600" alt="Screenshot 2026-02-10 213049" src="https://github.com/user-attachments/assets/effcca22-3650-46e1-9a86-b3b434851f2f" />
+
 
 ## 📃 Roadmap
 
@@ -84,3 +90,4 @@
 - [@ferferga](https://github.com/ferferga) for helping in development behind the scenes.
 - All contributors of [jellyfin/jellyfin-vue](https://github.com/jellyfin/jellyfin-vue).
 - And also [@jellyfin](https://github.com/jellyfin/) for creating the main service
+
