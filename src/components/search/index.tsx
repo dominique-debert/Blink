@@ -16,7 +16,6 @@ import {
 import type { TransitionProps } from "@mui/material/transitions";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { register } from "@tauri-apps/plugin-global-shortcut";
 import React, {
 	type ChangeEvent,
 	useCallback,
@@ -135,15 +134,16 @@ const Search = () => {
 	}, [navigate, toggleSearchDialog, debouncedSearchTerm]);
 
 	useEffect(() => {
-		async function registerglobalShortcut() {
-			await register("CommandOrControl+K", (e) => {
-				if (e.state === "Pressed") {
-					toggleSearchDialog();
-				}
-			});
-		}
-		registerglobalShortcut();
-	}, []);
+		const handleKeyDown = (e: KeyboardEvent) => {
+			// Listen for Cmd+K (Mac) or Ctrl+K (Windows/Linux)
+			if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+				e.preventDefault();
+				toggleSearchDialog();
+			}
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [toggleSearchDialog]);
 
 	return (
 		<Dialog

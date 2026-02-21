@@ -1,6 +1,5 @@
 import { getPlaystateApi } from "@jellyfin/sdk/lib/utils/api/playstate-api";
 import { IconButton, Slider, Typography } from "@mui/material";
-import { WebviewWindow as appWindow } from "@tauri-apps/api/webviewWindow";
 import { AnimatePresence, motion } from "motion/react";
 import React, {
 	type MouseEvent,
@@ -149,7 +148,10 @@ const VideoPlayerControls = ({
 	// }, [currentTime, creditInfo, itemDuration, queue, currentQueueItemIndex]);
 
 	const handleExitPlayer = useCallback(async () => {
-		appWindow.getCurrent().setFullscreen(false);
+		// Exit fullscreen if in fullscreen mode
+		if (document.fullscreenElement) {
+			await document.exitFullscreen();
+		}
 
 		history.back();
 		if (!api) {

@@ -10,7 +10,6 @@ import { getMediaInfoApi } from "@jellyfin/sdk/lib/utils/api/media-info-api";
 import { getMediaSegmentsApi } from "@jellyfin/sdk/lib/utils/api/media-segments-api";
 import { getPlaystateApi } from "@jellyfin/sdk/lib/utils/api/playstate-api";
 import { getUserApi } from "@jellyfin/sdk/lib/utils/api/user-api";
-import { WebviewWindow as appWindow } from "@tauri-apps/api/webviewWindow";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { shallow } from "zustand/shallow";
@@ -457,9 +456,8 @@ export const usePlaybackStore = create<
 				state.playsessionId = playsessionId;
 			}),
 		toggleIsPlayerFullscreen: async () => {
-			await appWindow
-				.getCurrent()
-				.setFullscreen(!get().playerState.isPlayerFullscreen);
+			// Note: Full window fullscreen is only available in Tauri desktop builds
+			// In browser, the fullscreen state is managed by the player component
 			set((state) => {
 				state.playerState.isPlayerFullscreen =
 					!state.playerState.isPlayerFullscreen;

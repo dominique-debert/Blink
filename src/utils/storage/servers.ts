@@ -1,5 +1,5 @@
 import type { RecommendedServerInfo } from "@jellyfin/sdk";
-import { load } from "@tauri-apps/plugin-store";
+import { getStore } from "./localStorage";
 
 export interface ServerInfo extends RecommendedServerInfo {
 	id: string;
@@ -10,7 +10,17 @@ export interface ServerStore {
 	servers: ServerInfo[];
 }
 
-const store = await load(".servers.dat", { autoSave: true });
+let store: any = null;
+
+/**
+ * Initialize the servers store lazily on first use
+ */
+const ensureServersStore = async () => {
+	if (!store) {
+		store = getStore("servers");
+	}
+	return store;
+};
 
 /**
  * Set server in .servers.dat
@@ -19,6 +29,7 @@ export const setServer = async (
 	serverId: string,
 	serverInfo: RecommendedServerInfo,
 ) => {
+	const serversStore = await ensureServersStore();
 	const servers = await getAllServers();
 	const newServers = servers.filter((server) => server.id !== serverId);
 
@@ -27,8 +38,8 @@ export const setServer = async (
 		id: serverId,
 	});
 
-	await store.set("servers", newServers);
-	await store.save();
+	await serversStore.set("servers", newServers);
+	await serversStore.save();
 };
 
 /**
@@ -37,8 +48,9 @@ export const setServer = async (
 export const setDefaultServer = async (
 	serverId: ServerStore["defaultServer"],
 ) => {
-	await store.set("defaultServer", serverId);
-	await store.save();
+	const serversStore = await ensureServersStore();
+	await serversStore.set("defaultServer", serverId);
+	await serversStore.save();
 };
 
 /**
@@ -56,7 +68,9 @@ export const getServer = async (
  * Get all Servers
  */
 export const getAllServers = async () => {
-	const servers = (await store.get<ServerStore["servers"]>("servers")) || [];
+	const serversStore = await ensureServersStore();
+	const servers =
+		(await serversStore.get<ServerStore["servers"]>("servers")) || [];
 
 	return servers;
 };
@@ -64,28 +78,31 @@ export const getAllServers = async () => {
 /**
  * Get default server
  */
-export const getDefaultServer = () => {
-	return store.get<ServerStore["defaultServer"]>("defaultServer");
+export const getDefaultServer = async () => {
+	const serversStore = await ensureServersStore();
+	return serversStore.get<ServerStore["defaultServer"]>("defaultServer");
 };
 
 /**
  * Delete the given server from client storage
  */
 export const delServer = async (serverId: string) => {
+	const serversStore = await ensureServersStore();
 	const servers = await getAllServers();
 
 	const newServers = servers.filter((server) => server.id !== serverId);
 
-	await store.set("servers", newServers);
-	await store.save();
+	await serversStore.set("servers", newServers);
+	await serversStore.save();
 };
 
 /**
  * Delete the all servers from client storage
  */
 export const delAllServer = async () => {
-	await store.clear();
+	const serversStore = await ensureServersStore();
+	await serversStore.clear();
 	// remove the default server
 	await setDefaultServer(null);
-	await store.save();
+	await serversStore.save();
 };

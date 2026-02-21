@@ -1,23 +1,43 @@
-import { load } from "@tauri-apps/plugin-store";
+import { getStore } from "./localStorage";
 
-const PlayerStore = await load(".player.dat", { autoSave: true });
+let PlayerStore: any = null;
 
-export const setPlayerVolume = async (type: "audio" | "video", volume: number) => {
-	await PlayerStore.set(`${type}.volume`, volume);
-	await PlayerStore.save();
+/**
+ * Initialize the player store lazily on first use
+ */
+const ensurePlayerStore = async () => {
+	if (!PlayerStore) {
+		PlayerStore = getStore("player");
+	}
+	return PlayerStore;
+};
+
+export const setPlayerVolume = async (
+	type: "audio" | "video",
+	volume: number,
+) => {
+	const store = await ensurePlayerStore();
+	await store.set(`${type}.volume`, volume);
+	await store.save();
 };
 
 export const getPlayerVolume = async (type: "audio" | "video") => {
-	const value = await PlayerStore.get<number>(`${type}.volume`);
+	const store = await ensurePlayerStore();
+	const value = await store.get<number>(`${type}.volume`);
 	return value ?? 0.8;
 };
 
-export const setPlayerMuted = async (type: "audio" | "video", muted: boolean) => {
-	await PlayerStore.set(`${type}.muted`, muted);
-	await PlayerStore.save();
+export const setPlayerMuted = async (
+	type: "audio" | "video",
+	muted: boolean,
+) => {
+	const store = await ensurePlayerStore();
+	await store.set(`${type}.muted`, muted);
+	await store.save();
 };
 
 export const getPlayerMuted = async (type: "audio" | "video") => {
-	const value = await PlayerStore.get<boolean>(`${type}.muted`);
+	const store = await ensurePlayerStore();
+	const value = await store.get<boolean>(`${type}.muted`);
 	return value ?? false;
 };

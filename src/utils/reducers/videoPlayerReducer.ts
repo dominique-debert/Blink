@@ -1,4 +1,3 @@
-import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 import type ReactPlayer from "react-player";
 
 type VideoPlayerState = {
@@ -106,7 +105,8 @@ const reducer = (
 				isPlayerPlaying: !state.isPlayerPlaying,
 			};
 		case VideoPlayerActionKind.TOGGLE_PLAYER_FULLSCREEN: {
-			WebviewWindow.getCurrent().setFullscreen(!state.isPlayerFullscreen);
+			// Note: Full window fullscreen is only available in Tauri desktop builds
+			// In browser, the fullscreen state is managed by the player component
 			return {
 				...state,
 				isPlayerFullscreen: !state.isPlayerFullscreen,

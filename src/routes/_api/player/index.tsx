@@ -1,6 +1,5 @@
 import { getPlaystateApi } from "@jellyfin/sdk/lib/utils/api/playstate-api";
 import CircularProgress from "@mui/material/CircularProgress";
-import { WebviewWindow as appWindow } from "@tauri-apps/api/webviewWindow";
 import React, { useCallback, useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
 import { secToTicks, ticksToSec } from "@/utils/date/time";
@@ -350,10 +349,10 @@ export function VideoPlayer() {
 				PositionTicks: secToTicks(currentTime),
 				RepeatMode: RepeatMode.RepeatNone,
 				VolumeLevel: Math.floor(volume * 100),
-
 			},
 		});
-	}, [setCurrentTime,
+	}, [
+		setCurrentTime,
 		api,
 		mediaSource,
 		isPlayerMuted,
@@ -361,11 +360,14 @@ export function VideoPlayer() {
 		itemId,
 		playsessionId,
 		userDataLastPlayedPositionTicks,
-		volume,]);
-
+		volume,
+	]);
 
 	const handleExitPlayer = useCallback(async () => {
-		appWindow.getCurrent().setFullscreen(false);
+		// Exit fullscreen if in fullscreen mode
+		if (document.fullscreenElement) {
+			await document.exitFullscreen();
+		}
 
 		history.back();
 		if (!api) {

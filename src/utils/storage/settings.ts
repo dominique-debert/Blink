@@ -1,6 +1,16 @@
-import { load } from "@tauri-apps/plugin-store";
+import { getStore } from "./localStorage";
 
-const SettingsStore = await load(".settings.dat", { autoSave: true });
+let SettingsStore: any = null;
+
+/**
+ * Initialize the settings store lazily on first use
+ */
+const ensureSettingsStore = async () => {
+	if (!SettingsStore) {
+		SettingsStore = getStore("settings");
+	}
+	return SettingsStore;
+};
 
 /**
  * settingKey should be of type:
@@ -8,12 +18,14 @@ const SettingsStore = await load(".settings.dat", { autoSave: true });
  */
 
 export const setSetting = async (settingKey: string, value: boolean) => {
-	await SettingsStore.set(settingKey, value);
-	await SettingsStore.save();
+	const store = await ensureSettingsStore();
+	await store.set(settingKey, value);
+	await store.save();
 };
 
 export const getSetting = async (settingKey: string) => {
-	const value = await SettingsStore.get(settingKey);
+	const store = await ensureSettingsStore();
+	const value = await store.get(settingKey);
 	console.log(`${settingKey} - ${value}`);
 	if (value) return value;
 	return false;
