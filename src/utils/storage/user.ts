@@ -1,14 +1,24 @@
-import { load } from "@tauri-apps/plugin-store";
+import { getStore } from "./localStorage";
 
 export interface UserStore {
-		user: {
-			Name: string;
-			AccessToken: string;
-			Id: string;
-		};
-	}
+	user: {
+		Name: string;
+		AccessToken: string;
+		Id: string;
+	};
+}
 
-const user = await load(".user.dat", { autoSave: true });
+let user: any = null;
+
+/**
+ * Initialize the user store lazily on first use
+ */
+const ensureUserStore = async () => {
+	if (!user) {
+		user = getStore("user");
+	}
+	return user;
+};
 
 /**
  * Set User details to .user.dat
@@ -18,13 +28,14 @@ const saveUser = async (
 	accessToken: string,
 	userId: string,
 ) => {
-	user.set("user", {
+	const userStore = await ensureUserStore();
+	userStore.set("user", {
 		Name: userName,
 		AccessToken: accessToken,
 		Id: userId,
 	});
 
-	await user.save();
+	await userStore.save();
 };
 
 /**
@@ -32,7 +43,8 @@ const saveUser = async (
  * @return {object}
  */
 const getUser = async () => {
-	return user.get<UserStore["user"]>("user");
+	const userStore = await ensureUserStore();
+	return userStore.get<UserStore["user"]>("user");
 };
 
 /**
@@ -40,8 +52,9 @@ const getUser = async () => {
  */
 const delUser = async () => {
 	sessionStorage.removeItem("accessToken");
-	await user.clear();
-	await user.save();
+	const userStore = await ensureUserStore();
+	await userStore.clear();
+	await userStore.save();
 };
 
 export { saveUser, getUser, delUser };

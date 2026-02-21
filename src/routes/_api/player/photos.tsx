@@ -1,16 +1,12 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "motion/react";
+import React, { type MouseEvent, useCallback, useMemo, useState } from "react";
 import { useApiInContext } from "@/utils/store/api";
 import { usePhotosPlayback } from "@/utils/store/photosPlayback";
-import { createFileRoute } from "@tanstack/react-router";
-import React, { type MouseEvent, useCallback, useMemo, useState } from "react";
-
-import { AnimatePresence, motion } from "motion/react";
-//@ts-ignore
+//@ts-expect-error
 import brokenImage from "/assetsStatic/broken-image.png?url";
 
-import { save } from "@tauri-apps/plugin-dialog";
-
 import "./photos.scss";
-import getImageUrlsApi from "@/utils/methods/getImageUrlsApi";
 import {
 	IconButton,
 	ListItemIcon,
@@ -18,8 +14,8 @@ import {
 	Menu,
 	MenuItem,
 } from "@mui/material";
-import { download } from "@tauri-apps/plugin-upload";
 import { useSnackbar } from "notistack";
+import getImageUrlsApi from "@/utils/methods/getImageUrlsApi";
 
 export const Route = createFileRoute("/_api/player/photos")({
 	component: PhotosPlayer,
@@ -94,23 +90,16 @@ function PhotosPlayer() {
 	}, []);
 
 	const handleImageDownload = useCallback(async () => {
-		const pathToSave = await save({
-			filters: [
-				{
-					name: "Image",
-					extensions: ["png", "jpeg"],
-				},
-			],
-		});
-
-		if (pathToSave) {
-			download(
-				`${api?.basePath}/Items/${currentPhoto?.Id}/Download?api_key=${api?.accessToken}`,
-				pathToSave,
-			);
-			enqueueSnackbar("Image download queued.", { variant: "info" });
-		}
-	}, [currentIndex]);
+		// Browser-based download: create a temporary link and click it
+		const downloadUrl = `${api?.basePath}/Items/${currentPhoto?.Id}/Download?api_key=${api?.accessToken}`;
+		const a = document.createElement("a");
+		a.href = downloadUrl;
+		a.download = currentPhoto?.Name || "image";
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		enqueueSnackbar("Image download started.", { variant: "info" });
+	}, [currentIndex, currentPhoto, api]);
 
 	return (
 		<div className="photos">

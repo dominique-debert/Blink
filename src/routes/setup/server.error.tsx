@@ -3,7 +3,6 @@ import React from "react";
 
 import "./server.error.scss";
 import { Button, Typography } from "@mui/material";
-import { relaunch } from "@tauri-apps/plugin-process";
 
 export const Route = createFileRoute("/setup/server/error")({
 	component: () => {
@@ -24,7 +23,7 @@ export const Route = createFileRoute("/setup/server/error")({
 					<Button
 						variant="contained"
 						color="secondary"
-						onClick={async () => await relaunch()}
+						onClick={() => window.location.reload()}
 					>
 						Restart Blink
 					</Button>

@@ -1,6 +1,5 @@
 import { Button, Typography } from "@mui/material";
-import { Link, createFileRoute } from "@tanstack/react-router";
-import { relaunch } from "@tauri-apps/plugin-process";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import React from "react";
 
 export const Route = createFileRoute("/error/$code")({
@@ -39,7 +38,10 @@ function ErrorRoute() {
 						>
 							Change Server
 						</Button>
-						<Button variant="contained" onClick={async () => await relaunch()}>
+						<Button
+							variant="contained"
+							onClick={() => window.location.reload()}
+						>
 							Restart Blink
 						</Button>
 					</div>
@@ -49,4 +51,4 @@ function ErrorRoute() {
 		default:
 			return <div>Error</div>;
 	}
-} 
+}

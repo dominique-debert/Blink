@@ -16,7 +16,6 @@ import {
 import type { TransitionProps } from "@mui/material/transitions";
 import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { useSnackbar } from "notistack";
 import React, { useCallback, useState } from "react";
 import useInterval from "@/utils/hooks/useInterval";
@@ -222,12 +221,14 @@ const QuickConnectButton = (props: LoadingButtonProps) => {
 									borderRadius: "10px",
 									cursor: "pointer",
 								}}
-								onClick={async () => {
-									quickConnectCode && (await writeText(quickConnectCode));
-									enqueueSnackbar("Quick Connect Code copied!", {
-										variant: "info",
-										key: "copiedText",
-									});
+								onClick={() => {
+									if (quickConnectCode) {
+										navigator.clipboard.writeText(quickConnectCode);
+										enqueueSnackbar("Quick Connect Code copied!", {
+											variant: "info",
+											key: "copiedText",
+										});
+									}
 								}}
 							>
 								{quickConnectCode}
